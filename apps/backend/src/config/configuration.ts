@@ -8,7 +8,6 @@ export default () => ({
   database: {
     uri: process.env.MONGO_URI,
   },
-
   // JWT uses TWO tokens:
   // accessToken  → short-lived (15min), sent with every request
   // refreshToken → long-lived (7d), only used to get a new accessToken
@@ -21,7 +20,7 @@ export default () => ({
 
   mail: {
     host: process.env.MAIL_HOST,
-    port: parseInt(process.env.PORT, 10) || 587,
+    port: parseInt(process.env.MAIL_PORT, 10) || 587,
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
     from: process.env.MAIL_FROM,

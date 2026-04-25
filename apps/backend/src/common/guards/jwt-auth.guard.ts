@@ -17,7 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class JWTAuthGuard extends AuthGuard('jwt') {
+export class JwtAuthGuard extends AuthGuard('jwt') {
   // 'jwt' matches the strategy name in JwtStrategy.
   // The parent AuthGuard handles all the token extraction and validation.
   // We don't need to add any logic here.
