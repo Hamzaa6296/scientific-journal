@@ -182,22 +182,18 @@ let AuthService = class AuthService {
     }
     async generateTokens(userId, email, role) {
         const payload = { sub: userId, email, role };
-        const accessExpiresIn = this.configService.get('jwt.accessExpiresIn');
-        const refreshExpiresIn = this.configService.get('jwt.refreshExpiresIn');
-        const [accessToken, refreshToken] = await Promise.all([
-            this.jwtService.signAsync(payload, {
-                secret: this.configService.get('jwt.accessSecret'),
-                expiresIn: typeof accessExpiresIn === 'string'
-                    ? parseInt(accessExpiresIn, 10)
-                    : accessExpiresIn,
-            }),
-            this.jwtService.signAsync(payload, {
-                secret: this.configService.get('jwt.refreshSecret'),
-                expiresIn: typeof refreshExpiresIn === 'string'
-                    ? parseInt(refreshExpiresIn, 10)
-                    : refreshExpiresIn,
-            }),
-        ]);
+        const accessSecret = process.env.JWT_ACCESS_SECRET;
+        const refreshSecret = process.env.JWT_REFRESH_SECRET;
+        const accessExpiresIn = process.env.JWT_ACCESS_EXPIRES_IN || '15m';
+        const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
+        const accessToken = await this.jwtService.signAsync(payload, {
+            secret: accessSecret,
+            expiresIn: accessExpiresIn,
+        });
+        const refreshToken = await this.jwtService.signAsync(payload, {
+            secret: refreshSecret,
+            expiresIn: refreshExpiresIn,
+        });
         return { accessToken, refreshToken };
     }
     async saveRefreshToken(userId, refreshToken) {

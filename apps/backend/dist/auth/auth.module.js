@@ -23,25 +23,27 @@ exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            config_1.ConfigModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
-                useFactory: (config) => ({
-                    secret: config.get('jwt.accessSecret'),
-                    signOptions: {
-                        expiresIn: config.get('jwt.accessExpiresIn'),
-                    },
-                }),
+                useFactory: (config) => {
+                    const secret = config.get('jwt.accessSecret');
+                    const expiresIn = config.get('jwt.accessExpiresIn') || '15m';
+                    return {
+                        secret,
+                        signOptions: {
+                            expiresIn: expiresIn,
+                        },
+                    };
+                },
             }),
             mongoose_1.MongooseModule.forFeature([{ name: user_schema_1.User.name, schema: user_schema_1.UserSchema }]),
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService, mail_service_1.MailService, jwt_strategy_1.JwtStrategy],
-        exports: [
-            jwt_strategy_1.JwtStrategy,
-            passport_1.PassportModule,
-            mongoose_1.MongooseModule,
-        ],
+        exports: [jwt_strategy_1.JwtStrategy, passport_1.PassportModule, mongoose_1.MongooseModule],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

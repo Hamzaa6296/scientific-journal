@@ -12,6 +12,7 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const auth_module_1 = require("./auth/auth.module");
 const configuration_1 = require("./config/configuration");
+const users_module_1 = require("./users/users.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -21,6 +22,7 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [configuration_1.default],
+                envFilePath: '.env',
             }),
             mongoose_1.MongooseModule.forRootAsync({
                 inject: [config_1.ConfigService],
@@ -29,6 +31,7 @@ exports.AppModule = AppModule = __decorate([
                 }),
             }),
             auth_module_1.AuthModule,
+            users_module_1.UsersModule,
         ],
     })
 ], AppModule);

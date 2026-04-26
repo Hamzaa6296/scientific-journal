@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   BadRequestException,
@@ -296,28 +297,22 @@ export class AuthService {
 
   private async generateTokens(userId: string, email: string, role: string) {
     const payload = { sub: userId, email, role };
-    const accessExpiresIn = this.configService.get<string | number>(
-      'jwt.accessExpiresIn',
-    );
-    const refreshExpiresIn = this.configService.get<string | number>(
-      'jwt.refreshExpiresIn',
-    );
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload, {
-        secret: this.configService.get<string>('jwt.accessSecret'),
-        expiresIn:
-          typeof accessExpiresIn === 'string'
-            ? parseInt(accessExpiresIn, 10)
-            : accessExpiresIn,
-      }),
-      this.jwtService.signAsync(payload, {
-        secret: this.configService.get<string>('jwt.refreshSecret'),
-        expiresIn:
-          typeof refreshExpiresIn === 'string'
-            ? parseInt(refreshExpiresIn, 10)
-            : refreshExpiresIn,
-      }),
-    ]);
+
+    const accessSecret = process.env.JWT_ACCESS_SECRET;
+    const refreshSecret = process.env.JWT_REFRESH_SECRET;
+    const accessExpiresIn = process.env.JWT_ACCESS_EXPIRES_IN || '15m';
+    const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
+
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: accessSecret,
+      expiresIn: accessExpiresIn as any,
+    });
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: refreshSecret,
+      expiresIn: refreshExpiresIn as any,
+    });
+
     return { accessToken, refreshToken };
   }
 

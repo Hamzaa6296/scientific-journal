@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import configuration from './config/configuration';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
+      envFilePath: '.env',
     }),
 
     // Connects to MongoDB once at app startup.
@@ -29,6 +31,7 @@ import configuration from './config/configuration';
     // Auth feature module — handles all /api/auth/* routes
     // As we build phases 2, 3, 4... we add more modules here
     AuthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

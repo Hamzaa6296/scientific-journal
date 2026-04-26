@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // PURPOSE: The Auth feature module — declares and wires everything auth-related.
 //
 // WHAT IS A MODULE?
@@ -11,8 +12,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
-import { SignOptions } from 'jsonwebtoken';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { MailService } from './mail.service';
@@ -21,38 +21,31 @@ import { User, UserSchema } from './schemas/user.schema';
 
 @Module({
   imports: [
-    // Sets JWT as the default Passport strategy
+    ConfigModule,
+
     PassportModule.register({ defaultStrategy: 'jwt' }),
 
-    // Configures JWT signing. registerAsync = read config values asynchronously
-    // (because ConfigModule loads after the module definition runs)
     JwtModule.registerAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('jwt.accessSecret'),
-        signOptions: {
-          expiresIn: config.get<string>(
-            'jwt.accessExpiresIn',
-          ) as SignOptions['expiresIn'],
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const secret = config.get<string>('jwt.accessSecret');
+        const expiresIn = config.get<string>('jwt.accessExpiresIn') || '15m';
+        return {
+          secret,
+          signOptions: {
+            // Cast to 'any' to satisfy the StringValue type from @nestjs/jwt
+            // '15m', '7d' are valid values — the type definition is just overly strict
+            expiresIn: expiresIn as any,
+          },
+        };
+      },
     }),
 
-    // Registers the User schema for this module.
-    // This is what makes @InjectModel(User.name) work in our services.
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
-
   controllers: [AuthController],
-
   providers: [AuthService, MailService, JwtStrategy],
-
-  exports: [
-    // Export these so other modules (e.g. UsersModule) don't need to
-    // re-configure JWT/Passport when they import AuthModule
-    JwtStrategy,
-    PassportModule,
-    MongooseModule, // exports the User model to other modules
-  ],
+  exports: [JwtStrategy, PassportModule, MongooseModule],
 })
 export class AuthModule {}

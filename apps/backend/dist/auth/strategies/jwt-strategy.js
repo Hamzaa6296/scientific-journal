@@ -22,27 +22,22 @@ const passport_jwt_1 = require("passport-jwt");
 const user_schema_1 = require("../schemas/user.schema");
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'jwt') {
     constructor(configService, userModel) {
+        const secret = configService.get('jwt.accessSecret');
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get('jwt.accessSecret'),
+            secretOrKey: secret,
         });
         this.configService = configService;
         this.userModel = userModel;
     }
     async validate(payload) {
         const user = await this.userModel.findById(payload.sub).exec();
-        if (!user) {
+        if (!user)
             throw new common_1.UnauthorizedException('User no longer exists');
-        }
-        if (!user.isEmailVerified) {
+        if (!user.isEmailVerified)
             throw new common_1.UnauthorizedException('Please verify your email first');
-        }
-        return {
-            userId: payload.sub,
-            email: payload.email,
-            role: payload.role,
-        };
+        return { userId: payload.sub, email: payload.email, role: payload.role };
     }
 };
 exports.JwtStrategy = JwtStrategy;

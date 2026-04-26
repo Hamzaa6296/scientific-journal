@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import {
   Body,
   Controller,
@@ -19,7 +20,6 @@ import {
   VerifyOtpDto,
   VerifyResetOtpDto,
 } from './dto/auth.dto';
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
