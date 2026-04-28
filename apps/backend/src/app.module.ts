@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
 import { UsersModule } from './users/users.module';
 import { PapersModule } from './papers/papers.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { PapersModule } from './papers/papers.module';
     AuthModule,
     UsersModule,
     PapersModule,
+    ReviewsModule,
   ],
 })
 export class AppModule {}

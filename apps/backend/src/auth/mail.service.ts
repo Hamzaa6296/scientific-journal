@@ -59,6 +59,62 @@ export class MailService {
     await this.sendMail(to, 'Password Reset Code — Scientific Journal', html);
   }
 
+  // ─── REVIEW INVITATION EMAIL ───────────────────────────────────────────────
+
+  async sendReviewInvitationEmail(
+    to: string,
+    reviewerName: string,
+    paperTitle: string,
+    paperId: string,
+  ): Promise<void> {
+    const reviewUrl = `${this.configService.get<string>('frontendUrl')}/reviewer/papers/${paperId}`;
+
+    const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>
+          body { font-family: Georgia, serif; background: #f5f5f0; padding: 20px; margin: 0; }
+          .container { max-width: 560px; margin: 0 auto; background: #fff; border-radius: 4px; overflow: hidden; }
+          .header { background: #1a1a2e; padding: 32px; text-align: center; }
+          .header h1 { color: #c9a84c; margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; }
+          .body { padding: 40px 32px; color: #333; font-size: 15px; line-height: 1.7; }
+          .paper-box { background: #f5f5f0; border-left: 4px solid #c9a84c; padding: 16px 20px; margin: 24px 0; }
+          .paper-title { font-weight: bold; font-size: 16px; color: #1a1a2e; }
+          .btn { display: inline-block; background: #1a1a2e; color: #c9a84c; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-size: 15px; margin: 20px 0; }
+          .footer { background: #f5f5f0; padding: 16px 32px; text-align: center; }
+          .footer p { color: #999; font-size: 12px; margin: 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header"><h1>Scientific Journal</h1></div>
+          <div class="body">
+            <p>Dear ${reviewerName},</p>
+            <p>You have been invited to review the following manuscript:</p>
+            <div class="paper-box">
+              <div class="paper-title">${paperTitle}</div>
+            </div>
+            <p>As a reviewer, you will be asked to evaluate the manuscript and provide a recommendation. Please accept or decline this invitation at your earliest convenience.</p>
+            <div style="text-align: center;">
+              <a href="${reviewUrl}" class="btn">View & Respond</a>
+            </div>
+            <p>Regards,<br>The Editorial Team</p>
+          </div>
+          <div class="footer">
+            <p>This is an automated message. Please do not reply to this email.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+    await this.sendMail(
+      to,
+      'Invitation to Review a Manuscript — Scientific Journal',
+      html,
+    );
+  }
   // ─── PRIVATE: SHARED OTP HTML TEMPLATE ────────────────────────────────────
   // Both signup OTP and reset OTP use the same visual template.
   // We just change the heading and description text.
