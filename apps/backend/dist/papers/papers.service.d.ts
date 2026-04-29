@@ -1,9 +1,13 @@
 import { Model, Types } from 'mongoose';
 import { Paper, PaperDocument } from './schema/paper.schema';
 import { CreatePaperDto, UpdatePaperDto, UpdateStatusDto, SubmitRevisionDto, PaperQueryDto } from './dto/paper.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { UserDocument } from '../auth/schemas/user.schema';
 export declare class PapersService {
     private paperModel;
-    constructor(paperModel: Model<PaperDocument>);
+    private userModel;
+    private notificationsService;
+    constructor(paperModel: Model<PaperDocument>, userModel: Model<UserDocument>, notificationsService: NotificationsService);
     private readonly validTransitions;
     createPaper(dto: CreatePaperDto, userId: string, userName: string): Promise<Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: Types.ObjectId;

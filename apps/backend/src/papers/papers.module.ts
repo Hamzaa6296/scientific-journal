@@ -4,6 +4,7 @@ import { PapersController } from './papers.controller';
 import { PapersService } from './papers.service';
 import { Paper, PaperSchema } from './schema/paper.schema';
 import { AuthModule } from '../auth/auth.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AuthModule } from '../auth/auth.module';
     MongooseModule.forFeature([{ name: Paper.name, schema: PaperSchema }]),
     // AuthModule gives us JwtStrategy + PassportModule for guards
     AuthModule,
+    NotificationsModule,
   ],
   controllers: [PapersController],
   providers: [PapersService],

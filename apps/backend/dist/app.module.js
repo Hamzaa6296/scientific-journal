@@ -14,6 +14,7 @@ const auth_module_1 = require("./auth/auth.module");
 const configuration_1 = require("./config/configuration");
 const users_module_1 = require("./users/users.module");
 const papers_module_1 = require("./papers/papers.module");
+const reviews_module_1 = require("./reviews/reviews.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,6 +35,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
             papers_module_1.PapersModule,
+            reviews_module_1.ReviewsModule,
         ],
     })
 ], AppModule);

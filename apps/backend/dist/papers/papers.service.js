@@ -17,10 +17,15 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const paper_schema_1 = require("./schema/paper.schema");
+const notifications_service_1 = require("../notifications/notifications.service");
+const notification_schema_1 = require("../notifications/schemas/notification.schema");
+const user_schema_1 = require("../auth/schemas/user.schema");
 const role_enum_1 = require("../common/enums/role.enum");
 let PapersService = class PapersService {
-    constructor(paperModel) {
+    constructor(paperModel, userModel, notificationsService) {
         this.paperModel = paperModel;
+        this.userModel = userModel;
+        this.notificationsService = notificationsService;
         this.validTransitions = {
             [paper_schema_1.PaperStatus.DRAFT]: [paper_schema_1.PaperStatus.SUBMITTED],
             [paper_schema_1.PaperStatus.SUBMITTED]: [paper_schema_1.PaperStatus.UNDER_REVIEW, paper_schema_1.PaperStatus.REJECTED],
@@ -63,10 +68,14 @@ let PapersService = class PapersService {
         if (!paper.fileUrl) {
             throw new common_1.BadRequestException('Please upload the paper PDF before submitting');
         }
-        const updated = await this.paperModel.findByIdAndUpdate(paperId, {
-            status: paper_schema_1.PaperStatus.SUBMITTED,
-            submissionDate: new Date(),
-        }, { new: true });
+        const updated = await this.paperModel.findByIdAndUpdate(paperId, { status: paper_schema_1.PaperStatus.SUBMITTED, submissionDate: new Date() }, { new: true });
+        const editors = await this.userModel
+            .find({ role: role_enum_1.Role.EDITOR, isEmailVerified: true })
+            .select('_id');
+        const editorIds = editors.map((e) => e._id.toString());
+        if (editorIds.length > 0) {
+            await this.notificationsService.notifyPaperSubmitted(editorIds, userId, paper.title, paperId);
+        }
         return updated.toJSON();
     }
     async getMySubmissions(userId) {
@@ -84,9 +93,8 @@ let PapersService = class PapersService {
             filter.status = status;
         if (category)
             filter.category = { $regex: category, $options: 'i' };
-        if (search) {
+        if (search)
             filter.$text = { $search: search };
-        }
         const skip = (page - 1) * limit;
         const [papers, total] = await Promise.all([
             this.paperModel
@@ -99,12 +107,7 @@ let PapersService = class PapersService {
         ]);
         return {
             papers,
-            pagination: {
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            },
+            pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
         };
     }
     async getPublishedPapers(query) {
@@ -127,12 +130,7 @@ let PapersService = class PapersService {
         ]);
         return {
             papers,
-            pagination: {
-                total,
-                page,
-                limit,
-                totalPages: Math.ceil(total / limit),
-            },
+            pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
         };
     }
     async getPaperById(paperId, userId, userRole) {
@@ -210,6 +208,24 @@ let PapersService = class PapersService {
         if (dto.editorNotes)
             updateData.editorNotes = dto.editorNotes;
         const updated = await this.paperModel.findByIdAndUpdate(paperId, updateData, { new: true });
+        const notifyStatuses = [
+            paper_schema_1.PaperStatus.UNDER_REVIEW,
+            paper_schema_1.PaperStatus.ACCEPTED,
+            paper_schema_1.PaperStatus.REJECTED,
+            paper_schema_1.PaperStatus.REVISION,
+            paper_schema_1.PaperStatus.PUBLISHED,
+        ];
+        if (notifyStatuses.includes(dto.status)) {
+            const typeMap = {
+                [paper_schema_1.PaperStatus.UNDER_REVIEW]: notification_schema_1.NotificationType.PAPER_UNDER_REVIEW,
+                [paper_schema_1.PaperStatus.ACCEPTED]: notification_schema_1.NotificationType.PAPER_ACCEPTED,
+                [paper_schema_1.PaperStatus.REJECTED]: notification_schema_1.NotificationType.PAPER_REJECTED,
+                [paper_schema_1.PaperStatus.REVISION]: notification_schema_1.NotificationType.PAPER_REVISION,
+                [paper_schema_1.PaperStatus.PUBLISHED]: notification_schema_1.NotificationType.PAPER_PUBLISHED,
+            };
+            const authorIds = paper.authors.map((a) => a.userId.toString());
+            await this.notificationsService.notifyPaperDecision(authorIds, typeMap[dto.status], paper.title, paperId, dto.editorComments);
+        }
         return updated.toJSON();
     }
     async submitRevision(paperId, dto, userId) {
@@ -263,6 +279,9 @@ exports.PapersService = PapersService;
 exports.PapersService = PapersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(paper_schema_1.Paper.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
+        notifications_service_1.NotificationsService])
 ], PapersService);
 //# sourceMappingURL=papers.service.js.map

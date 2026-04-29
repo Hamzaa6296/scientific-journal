@@ -13,6 +13,7 @@ const papers_controller_1 = require("./papers.controller");
 const papers_service_1 = require("./papers.service");
 const paper_schema_1 = require("./schema/paper.schema");
 const auth_module_1 = require("../auth/auth.module");
+const notifications_module_1 = require("../notifications/notifications.module");
 let PapersModule = class PapersModule {
 };
 exports.PapersModule = PapersModule;
@@ -21,6 +22,7 @@ exports.PapersModule = PapersModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: paper_schema_1.Paper.name, schema: paper_schema_1.PaperSchema }]),
             auth_module_1.AuthModule,
+            notifications_module_1.NotificationsModule,
         ],
         controllers: [papers_controller_1.PapersController],
         providers: [papers_service_1.PapersService],

@@ -44,6 +44,7 @@ import {
 } from './dto/reviews.dto';
 import { MailService } from '../auth/mail.service';
 import { Role } from '../common/enums/role.enum';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ReviewsService {
@@ -51,6 +52,7 @@ export class ReviewsService {
     @InjectModel(Paper.name) private paperModel: Model<PaperDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private mailService: MailService,
+    private notificationsService: NotificationsService,
   ) {}
 
   // ─── ASSIGN REVIEWERS (editor) ─────────────────────────────────────────────
@@ -136,6 +138,15 @@ export class ReviewsService {
       await this.mailService.sendReviewInvitationEmail(
         reviewer.email,
         reviewer.name,
+        paper.title,
+        paperId,
+      );
+    }
+
+    // In-app notification for each reviewer
+    for (const reviewer of reviewers) {
+      await this.notificationsService.notifyReviewAssigned(
+        (reviewer._id as any).toString(),
         paper.title,
         paperId,
       );
@@ -370,8 +381,41 @@ export class ReviewsService {
     if (allSubmitted && updatedRound.reviews.length > 0) {
       // In a full app, notify the editor here via email/notification
       // For now we just log it
-      console.log(
-        `All reviews submitted for paper: ${paper.title}. Editor can now make a decision.`,
+      if (allSubmitted && updatedRound.reviews.length > 0) {
+        // Notify all editors
+        const editors = await this.userModel
+          .find({
+            role: Role.EDITOR,
+            isEmailVerified: true,
+          })
+          .select('_id');
+
+        const editorIds = editors.map((e) => (e._id as any).toString());
+
+        await this.notificationsService.notifyAllReviewsComplete(
+          editorIds,
+          paper.title,
+          paperId,
+        );
+      }
+
+      // Notify editors that a review was submitted
+      const editors = await this.userModel
+        .find({
+          role: Role.EDITOR,
+          isEmailVerified: true,
+        })
+        .select('_id name');
+
+      const editorIds = editors.map((e) => (e._id as any).toString());
+
+      const reviewer = await this.userModel.findById(reviewerId).select('name');
+
+      await this.notificationsService.notifyReviewSubmitted(
+        editorIds,
+        reviewer?.name || 'A reviewer',
+        paper.title,
+        paperId,
       );
     }
 
