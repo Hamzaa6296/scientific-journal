@@ -9,30 +9,18 @@ export declare class PapersService {
     private notificationsService;
     constructor(paperModel: Model<PaperDocument>, userModel: Model<UserDocument>, notificationsService: NotificationsService);
     private readonly validTransitions;
-    createPaper(dto: CreatePaperDto, userId: string, userName: string): Promise<Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    createPaper(dto: CreatePaperDto, userId: string, userName: string): Promise<import("mongoose").FlattenMaps<Paper & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }>;
-    submitPaper(paperId: string, userId: string): Promise<Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    }>>;
+    submitPaper(paperId: string, userId: string): Promise<import("mongoose").FlattenMaps<Paper & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }>;
-    getMySubmissions(userId: string): Promise<(import("mongoose").Document<unknown, {}, PaperDocument, {}, import("mongoose").DefaultSchemaOptions> & Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    }>>;
+    getMySubmissions(userId: string): Promise<(import("mongoose").Document<unknown, {}, PaperDocument> & Paper & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    } & {
-        id: string;
     })[]>;
     getAllPapers(query: PaperQueryDto): Promise<{
-        papers: (import("mongoose").Document<unknown, {}, PaperDocument, {}, import("mongoose").DefaultSchemaOptions> & Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        papers: (import("mongoose").Document<unknown, {}, PaperDocument> & Paper & import("mongoose").Document<any, any, any> & {
             _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        } & {
-            id: string;
         })[];
         pagination: {
             total: number;
@@ -42,12 +30,8 @@ export declare class PapersService {
         };
     }>;
     getPublishedPapers(query: PaperQueryDto): Promise<{
-        papers: (import("mongoose").Document<unknown, {}, PaperDocument, {}, import("mongoose").DefaultSchemaOptions> & Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        papers: (import("mongoose").Document<unknown, {}, PaperDocument> & Paper & import("mongoose").Document<any, any, any> & {
             _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        } & {
-            id: string;
         })[];
         pagination: {
             total: number;
@@ -57,21 +41,15 @@ export declare class PapersService {
         };
     }>;
     getPaperById(paperId: string, userId: string, userRole: string): Promise<any>;
-    updatePaper(paperId: string, dto: UpdatePaperDto, userId: string): Promise<Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    updatePaper(paperId: string, dto: UpdatePaperDto, userId: string): Promise<import("mongoose").FlattenMaps<Paper & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }>;
-    updateStatus(paperId: string, dto: UpdateStatusDto, editorId: string): Promise<Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    }>>;
+    updateStatus(paperId: string, dto: UpdateStatusDto, editorId: string): Promise<import("mongoose").FlattenMaps<Paper & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }>;
-    submitRevision(paperId: string, dto: SubmitRevisionDto, userId: string): Promise<Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    }>>;
+    submitRevision(paperId: string, dto: SubmitRevisionDto, userId: string): Promise<import("mongoose").FlattenMaps<Paper & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }>;
+    }>>;
     deletePaper(paperId: string, userId: string, userRole: string): Promise<{
         message: string;
     }>;

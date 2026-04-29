@@ -25,7 +25,7 @@ export declare class AuthService {
         refreshToken: string;
         message: string;
         user: {
-            id: import("mongoose").Types.ObjectId;
+            id: any;
             name: string;
             email: string;
             role: import("../common/enums/role.enum").Role;

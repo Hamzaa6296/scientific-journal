@@ -13,12 +13,8 @@ export declare class NotificationsService {
     createNotification(data: CreateNotificationData): Promise<void>;
     createManyNotifications(data: CreateNotificationData[]): Promise<void>;
     getMyNotifications(userId: string, page?: number, limit?: number): Promise<{
-        notifications: (import("mongoose").Document<unknown, {}, NotificationDocument, {}, import("mongoose").DefaultSchemaOptions> & Notification & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        notifications: (import("mongoose").Document<unknown, {}, NotificationDocument> & Notification & import("mongoose").Document<any, any, any> & {
             _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        } & {
-            id: string;
         })[];
         pagination: {
             total: number;
@@ -31,11 +27,9 @@ export declare class NotificationsService {
     getUnreadCount(userId: string): Promise<{
         unreadCount: number;
     }>;
-    markAsRead(notificationId: string, userId: string): Promise<Notification & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    markAsRead(notificationId: string, userId: string): Promise<import("mongoose").FlattenMaps<Notification & import("mongoose").Document<any, any, any> & {
         _id: Types.ObjectId;
-    }> & {
-        __v: number;
-    }>;
+    }>>;
     markAllAsRead(userId: string): Promise<{
         message: string;
     }>;

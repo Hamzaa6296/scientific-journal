@@ -3,12 +3,8 @@ export declare class NotificationsController {
     private readonly notificationsService;
     constructor(notificationsService: NotificationsService);
     getMyNotifications(req: any, page?: number, limit?: number): Promise<{
-        notifications: (import("mongoose").Document<unknown, {}, import("./schemas/notification.schema").NotificationDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/notification.schema").Notification & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        notifications: (import("mongoose").Document<unknown, {}, import("./schemas/notification.schema").NotificationDocument> & import("./schemas/notification.schema").Notification & import("mongoose").Document<any, any, any> & {
             _id: import("mongoose").Types.ObjectId;
-        }> & {
-            __v: number;
-        } & {
-            id: string;
         })[];
         pagination: {
             total: number;
@@ -27,11 +23,9 @@ export declare class NotificationsController {
     deleteAllNotifications(req: any): Promise<{
         message: string;
     }>;
-    markAsRead(id: string, req: any): Promise<import("./schemas/notification.schema").Notification & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    markAsRead(id: string, req: any): Promise<import("mongoose").FlattenMaps<import("./schemas/notification.schema").Notification & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
-    }> & {
-        __v: number;
-    }>;
+    }>>;
     deleteNotification(id: string, req: any): Promise<{
         message: string;
     }>;

@@ -5,11 +5,9 @@ export declare class ReviewsController {
     constructor(reviewsService: ReviewsService);
     assignReviewers(paperId: string, dto: AssignReviewersDto, req: any): Promise<{
         message: string;
-        paper: import("../papers/schema/paper.schema").Paper & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        paper: import("mongoose").FlattenMaps<import("../papers/schema/paper.schema").Paper & import("mongoose").Document<any, any, any> & {
             _id: import("mongoose").Types.ObjectId;
-        }> & {
-            __v: number;
-        };
+        }>;
     }>;
     getPaperReviews(paperId: string): Promise<{
         paperId: string;
@@ -19,11 +17,9 @@ export declare class ReviewsController {
     }>;
     removeReviewer(paperId: string, reviewerId: string, req: any): Promise<{
         message: string;
-        paper: import("../papers/schema/paper.schema").Paper & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        paper: import("mongoose").FlattenMaps<import("../papers/schema/paper.schema").Paper & import("mongoose").Document<any, any, any> & {
             _id: import("mongoose").Types.ObjectId;
-        }> & {
-            __v: number;
-        };
+        }>;
     }>;
     getMyReviews(req: any): Promise<{
         paperId: any;

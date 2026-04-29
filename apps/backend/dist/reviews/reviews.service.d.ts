@@ -12,11 +12,9 @@ export declare class ReviewsService {
     constructor(paperModel: Model<PaperDocument>, userModel: Model<UserDocument>, mailService: MailService, notificationsService: NotificationsService);
     assignReviewers(paperId: string, dto: AssignReviewersDto, editorId: string): Promise<{
         message: string;
-        paper: Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        paper: import("mongoose").FlattenMaps<Paper & import("mongoose").Document<any, any, any> & {
             _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        };
+        }>;
     }>;
     getPaperReviews(paperId: string): Promise<{
         paperId: string;
@@ -47,11 +45,9 @@ export declare class ReviewsService {
     }>;
     removeReviewer(paperId: string, reviewerId: string, editorId: string): Promise<{
         message: string;
-        paper: Paper & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        paper: import("mongoose").FlattenMaps<Paper & import("mongoose").Document<any, any, any> & {
             _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        };
+        }>;
     }>;
     private findPaperById;
 }
