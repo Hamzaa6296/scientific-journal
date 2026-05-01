@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAppDispatch } from "@/hooks/useAuth";
 import { logoutUser } from "@/store/slices/authSlice";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // Navigation items per role
 const navItems: Record<
@@ -86,6 +87,7 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
           zIndex: 50,
           transition: "transform 0.3s ease",
           transform: isOpen ? "translateX(0)" : "translateX(-100%)",
+
           boxShadow: "var(--shadow-sidebar)",
         }}
       >
@@ -216,7 +218,7 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
           </p>
 
           {items.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               style={{
@@ -253,7 +255,7 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
               >
                 {item.label}
               </span>
-            </a>
+            </Link>
           ))}
         </nav>
 
