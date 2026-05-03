@@ -1,41 +1,71 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# =========================
+# Dependencies (all workspaces)
+# =========================
+**/node_modules
+node_modules
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+# =========================
+# Build outputs
+# =========================
+**/dist
+**/build
+**/.next
+**/.out
+**/.turbo
+**/.vite
+**/coverage
 
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
+# =========================
+# Logs
+# =========================
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# =========================
+# Environment variables
+# =========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# vercel
-.vercel
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
 
-# typescript
+# =========================
+# Editor/IDE
+# =========================
+.vscode/
+.idea/
+*.swp
+
+# =========================
+# TypeScript
+# =========================
 *.tsbuildinfo
-next-env.d.ts
+
+# =========================
+# Testing
+# =========================
+jest-cache/
+.cypress/
+
+# =========================
+# Misc cache
+# =========================
+.cache/
+.eslintcache
+.parcel-cache
+
+# =========================
+# Monorepo tools (if used)
+# =========================
+.turbo/
+.pnpm-store/

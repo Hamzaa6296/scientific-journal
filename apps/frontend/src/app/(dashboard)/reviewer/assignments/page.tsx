@@ -5,6 +5,7 @@ import reviewsService from "@/services/reviewsService";
 import { formatDate, truncate, getErrorMessage } from "@/lib/utils";
 import Spinner from "@/components/ui/Spinner";
 import Badge from "@/components/ui/Badge";
+import Link from "next/link";
 
 interface MyReview {
   round: number;
@@ -498,7 +499,7 @@ export default function ReviewerAssignmentsPage() {
                 <div
                   style={{ display: "flex", gap: "10px", alignItems: "center" }}
                 >
-                  <a
+                  <Link
                     href={`/reviewer/assignments/${assignment.paperId}`}
                     style={{
                       fontSize: "13px",
@@ -520,10 +521,10 @@ export default function ReviewerAssignmentsPage() {
                     }}
                   >
                     {isPending ? "📝 Write Review" : "👁 View Details"}
-                  </a>
+                  </Link>
 
                   {assignment.fileUrl && (
-                    <a
+                    <Link
                       href={assignment.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -541,7 +542,7 @@ export default function ReviewerAssignmentsPage() {
                       }}
                     >
                       📄 Read Paper
-                    </a>
+                    </Link>
                   )}
                 </div>
               </div>
