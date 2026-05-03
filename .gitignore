@@ -1,1 +1,71 @@
+# =========================
+# Dependencies (all workspaces)
+# =========================
+**/node_modules
 node_modules
+
+# =========================
+# Build outputs
+# =========================
+**/dist
+**/build
+**/.next
+**/.out
+**/.turbo
+**/.vite
+**/coverage
+
+# =========================
+# Logs
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Editor/IDE
+# =========================
+.vscode/
+.idea/
+*.swp
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Testing
+# =========================
+jest-cache/
+.cypress/
+
+# =========================
+# Misc cache
+# =========================
+.cache/
+.eslintcache
+.parcel-cache
+
+# =========================
+# Monorepo tools (if used)
+# =========================
+.turbo/
+.pnpm-store/
