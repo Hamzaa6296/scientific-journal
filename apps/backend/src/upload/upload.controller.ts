@@ -18,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { ConfigService } from '@nestjs/config';
 import { existsSync, mkdirSync } from 'fs';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -30,6 +31,7 @@ if (!existsSync(uploadDir)) {
 
 @Controller('upload')
 export class UploadController {
+  constructor(private configService: ConfigService) {}
   // POST /api/upload/pdf
   // Accepts a single file field named 'file'
   @UseGuards(JwtAuthGuard)
@@ -72,7 +74,8 @@ export class UploadController {
 
     // Build the public URL that the frontend will store and display
     // In production replace this with your Cloudinary/S3 URL
-    const fileUrl = `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/upload/files/${file.filename}`;
+    const backendUrl = this.configService.get<string>('backendUrl');
+    const fileUrl = `${backendUrl}/api/upload/files/${file.filename}`;
 
     return {
       message: 'File uploaded successfully',
