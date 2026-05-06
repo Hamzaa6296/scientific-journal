@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* ─── THEME: Custom design tokens ──────────────────────────────────────────── */
 /* In Tailwind v4 you define custom values here instead of tailwind.config.ts  */

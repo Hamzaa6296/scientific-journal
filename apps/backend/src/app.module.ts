@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { UsersModule } from './users/users.module';
 import { PapersModule } from './papers/papers.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     UsersModule,
     PapersModule,
     ReviewsModule,
+    UploadModule,
   ],
 })
 export class AppModule {}

@@ -5,9 +5,11 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port') || 5000;
 
@@ -32,6 +34,12 @@ async function bootstrap() {
     origin: ['http://localhost:3000', configService.get<string>('frontendUrl')],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
+  });
+
+  // Serve uploaded files as static assets
+  // Files at /uploads/filename.pdf are accessible via /api/upload/files/filename.pdf
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads',
   });
 
   await app.listen(port);

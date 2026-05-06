@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import papersService from "@/services/papersService";
 import { getErrorMessage } from "@/lib/utils";
+import PdfUpload from "@/components/ui/PdfUpload";
 
 const CATEGORIES = [
   "Computer Science",
@@ -270,7 +271,7 @@ function SubmitPaperContent() {
             marginBottom: "8px",
           }}
         >
-          <a
+          <Link
             href="/author/submissions"
             style={{
               fontSize: "13px",
@@ -280,7 +281,7 @@ function SubmitPaperContent() {
             }}
           >
             ← My Submissions
-          </a>
+          </Link>
         </div>
         <h2
           style={{
@@ -753,52 +754,18 @@ function SubmitPaperContent() {
             </p>
 
             {/* File URL */}
+            {/* PDF Upload */}
             <div style={{ marginBottom: "24px" }}>
-              <label style={labelStyle}>Paper PDF URL *</label>
-              <input
-                type="url"
+              <label style={labelStyle}>Paper PDF *</label>
+              <PdfUpload
                 value={form.fileUrl}
-                onChange={(e) => setForm({ ...form, fileUrl: e.target.value })}
-                placeholder="https://example.com/your-paper.pdf"
-                className={`input-base ${formErrors.fileUrl ? "input-error" : ""}`}
+                onChange={(url) => {
+                  setForm({ ...form, fileUrl: url });
+                  setFormErrors({ ...formErrors, fileUrl: "" });
+                }}
+                error={formErrors.fileUrl}
               />
-              {formErrors.fileUrl && (
-                <p style={errorStyle}>{formErrors.fileUrl}</p>
-              )}
-              {form.fileUrl && (
-                <div
-                  style={{
-                    marginTop: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "#22c55e",
-                      fontFamily: "var(--font-sans)",
-                    }}
-                  >
-                    ✓ File URL provided
-                  </span>
-                  <a
-                    href={form.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      fontSize: "13px",
-                      color: "var(--color-primary-900)",
-                      fontFamily: "var(--font-sans)",
-                    }}
-                  >
-                    Preview ↗
-                  </a>
-                </div>
-              )}
             </div>
-
             {/* Summary */}
             <div
               style={{
@@ -966,6 +933,7 @@ function Loader() {
 }
 
 import Spinner from "@/components/ui/Spinner";
+import Link from "next/link";
 
 const labelStyle: React.CSSProperties = {
   display: "block",

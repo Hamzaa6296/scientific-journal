@@ -18,11 +18,12 @@ export default function DashboardLayout({
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const [sidebarOpen, setSidebarOpen] = useState(false); // ✅ closed by default
+  const [sidebarOpen, setSidebarOpen] = useState(true); // ✅ open by default
   const [isMounted, setIsMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
 
     const checkScreen = () => setIsMobile(window.innerWidth < 768);

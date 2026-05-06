@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -7,6 +8,8 @@ import papersService from "@/services/papersService";
 import { formatDate, getErrorMessage } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import Spinner from "@/components/ui/Spinner";
+import PdfUpload from "@/components/ui/PdfUpload";
+import Link from "next/link";
 
 function PaperDetailContent() {
   const params = useParams();
@@ -119,7 +122,7 @@ function PaperDetailContent() {
     <div style={{ maxWidth: "900px" }}>
       {/* Back */}
       <div style={{ marginBottom: "20px" }}>
-        <a
+        <Link
           href="/author/submissions"
           style={{
             fontSize: "13px",
@@ -129,7 +132,7 @@ function PaperDetailContent() {
           }}
         >
           ← My Submissions
-        </a>
+        </Link>
       </div>
 
       {/* Success */}
@@ -389,16 +392,10 @@ function PaperDetailContent() {
           ) : (
             <form onSubmit={handleSubmitRevision}>
               <div style={{ marginBottom: "16px" }}>
-                <label style={{ ...labelStyle, color: "#9a3412" }}>
-                  Revised Paper PDF URL *
-                </label>
-                <input
-                  type="url"
+                <label style={{ ...labelStyle }}>Revised Paper PDF *</label>
+                <PdfUpload
                   value={revisionUrl}
-                  onChange={(e) => setRevisionUrl(e.target.value)}
-                  placeholder="https://example.com/revised-paper.pdf"
-                  className="input-base"
-                  required
+                  onChange={(url) => setRevisionUrl(url)}
                 />
               </div>
               <div style={{ marginBottom: "16px" }}>

@@ -532,6 +532,7 @@ export default function HomePage() {
                 display: "flex",
                 justifyContent: "center",
                 padding: "40px",
+                overflow: "hidden",
               }}
             >
               <div
@@ -638,6 +639,8 @@ export default function HomePage() {
                         fontSize: "16px",
                         lineHeight: 1.5,
                         margin: "0 0 10px",
+                        wordBreak: "break-word",
+                        overflowWrap: "anywhere",
                       }}
                     >
                       {truncate(paper.title, 80)}
@@ -650,6 +653,8 @@ export default function HomePage() {
                         fontFamily: "var(--font-sans)",
                         lineHeight: 1.6,
                         margin: "0 0 16px",
+                        wordBreak: "break-word",
+                        overflowWrap: "anywhere",
                       }}
                     >
                       {truncate(paper.abstract, 120)}
