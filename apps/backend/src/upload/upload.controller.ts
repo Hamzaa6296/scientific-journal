@@ -22,6 +22,7 @@ import { ConfigService } from '@nestjs/config';
 import { existsSync, mkdirSync } from 'fs';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import type { File as MulterFile } from 'multer';
 
 // Make sure the uploads directory exists when the app starts
 const uploadDir = join(process.cwd(), 'uploads');
@@ -67,7 +68,7 @@ export class UploadController {
       },
     }),
   )
-  uploadPdf(@UploadedFile() file: Express.Multer.File) {
+  uploadPdf(@UploadedFile() file: MulterFile) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
