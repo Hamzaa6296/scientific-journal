@@ -1,7 +1,9 @@
 import axios, { AxiosInstance } from "axios";
 import Cookies from "js-cookie";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://scientific-journal-w5c0.onrender.com";
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
@@ -26,6 +28,7 @@ let failedQueue: Array<{
 
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     error ? reject(error) : resolve(token!);
   });
   failedQueue = [];

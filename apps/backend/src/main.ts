@@ -31,7 +31,11 @@ async function bootstrap() {
 
   // Allow our Next.js frontend to call this API (browsers block cross-origin by default)
   app.enableCors({
-    origin: ['http://localhost:3000', configService.get<string>('frontendUrl')],
+    origin: [
+      'http://localhost:3000',
+      'https://scientific-journal-frontend.vercel.app/',
+      configService.get<string>('frontendUrl'),
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
