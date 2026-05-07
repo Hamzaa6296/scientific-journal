@@ -1,9 +1,11 @@
 import axios, { AxiosInstance } from "axios";
 import Cookies from "js-cookie";
 
+// Always include /api in the base URL
+// The fallback also includes /api so requests work even without the env var
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  "https://scientific-journal-w5c0.onrender.com";
+  "https://scientific-journal-w5c0.onrender.com/api";
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
@@ -28,7 +30,6 @@ let failedQueue: Array<{
 
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     error ? reject(error) : resolve(token!);
   });
   failedQueue = [];
@@ -64,9 +65,11 @@ api.interceptors.response.use(
       }
 
       try {
+        // Use API_URL which already includes /api
         const response = await axios.post(`${API_URL}/auth/refresh`, {
           refreshToken,
         });
+
         const { accessToken, refreshToken: newRefreshToken } = response.data;
 
         Cookies.set("accessToken", accessToken, {

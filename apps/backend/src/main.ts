@@ -1,11 +1,8 @@
-// PURPOSE: Application entry point — boots the server with global config.
-// Everything here applies to the ENTIRE application.
-
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppModule } from './app.module';
 import { join } from 'path';
 
 async function bootstrap() {
@@ -13,14 +10,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port') || 5000;
 
-  // All routes prefixed with /api → /api/auth/login, /api/papers, etc.
   app.setGlobalPrefix('api');
 
-  // ValidationPipe ACTIVATES all class-validator decorators on DTOs.
-  // Without this line, @IsEmail(), @IsNotEmpty() etc. do absolutely nothing.
-  // whitelist: true           → strips fields not defined in the DTO (security)
-  // forbidNonWhitelisted: true → throws error if unknown fields are sent
-  // transform: true            → auto-converts types (e.g. "5" → 5 for numbers)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -29,19 +20,37 @@ async function bootstrap() {
     }),
   );
 
-  // Allow our Next.js frontend to call this API (browsers block cross-origin by default)
+  // Build allowed origins list — strip trailing slashes to be safe
+  const rawFrontendUrl = configService.get<string>('frontendUrl') || '';
+  const cleanFrontendUrl = rawFrontendUrl.replace(/\/$/, '');
+
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://scientific-journal-frontend.vercel.app',
+    cleanFrontendUrl,
+  ].filter(Boolean);
+
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://scientific-journal-frontend.vercel.app/',
-      configService.get<string>('frontendUrl'),
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (Postman, mobile apps, server-to-server)
+      if (!origin) return callback(null, true);
+
+      // Strip trailing slash from incoming origin before comparing
+      const cleanOrigin = origin.replace(/\/$/, '');
+
+      if (allowedOrigins.includes(cleanOrigin)) {
+        callback(null, true);
+      } else {
+        console.log(`CORS blocked: ${origin}`);
+        console.log(`Allowed: ${allowedOrigins.join(', ')}`);
+        callback(new Error(`CORS blocked for origin: ${origin}`));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
 
-  // Serve uploaded files as static assets
-  // Files at /uploads/filename.pdf are accessible via /api/upload/files/filename.pdf
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',
   });
